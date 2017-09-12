@@ -95,6 +95,7 @@ def handle_text(message):
         elif hour >= 19:
             answer = "Ты, блин, уже никуда не успеешь."
         bot.send_message (message.chat.id, answer)
+        send_days_keyboard(message)
 
 
 bot.polling (none_stop=True, interval=0)
