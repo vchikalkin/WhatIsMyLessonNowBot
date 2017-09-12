@@ -1,5 +1,6 @@
-import sheets
 import datetime
+
+import sheets
 
 dayofweek = datetime.datetime.today ().weekday ()
 # dayofweek = 1

@@ -99,4 +99,4 @@ def handle_text(message):
         bot.send_message (message.chat.id, answer)
 
 
-bot.polling (none_stop=True, interval=0, timeout=20)
+bot.polling (none_stop=True)
