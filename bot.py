@@ -88,7 +88,7 @@ def handle_text(message):
         # minute = datetime.datetime.today ().minute
         if 0 <= hour <= 12:
             answer = "Куда ты, блин, так рано собрался?"
-        elif 12 <= hour < 18:
+        elif 15 <= hour < 18:
             answer = (sheets.get_aud_force ("1"))
         elif 18 <= hour < 19:
             answer = (sheets.get_aud_force ("2"))
