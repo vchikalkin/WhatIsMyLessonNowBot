@@ -41,6 +41,7 @@ def send_days_keyboard(message):
 def send_week_keyboard(message):
     user_markup = telebot.types.ReplyKeyboardMarkup (True, False)
     user_markup.row ('Числитель', 'Знаменатель')
+    user_markup.row ('Выбрать день')
     answer = "Выбери неделю...\n_(Сейчас {0}, если что)_".format (now_week)
     bot.send_message (message.from_user.id, answer, parse_mode="Markdown", reply_markup=user_markup)
 
@@ -61,12 +62,10 @@ def handle_text(message):
         # bot.send_chat_action (message.chat.id, 'typing')
         answer = "В этот день нет пар. Отдыхай :)"
         bot.send_message (message.chat.id, answer)
-        send_days_keyboard (message)
 
     elif message.text == "Воскресенье":
         answer = "Ты понимаешь, что ты поехавший? В воскресенье не бывает пар."
         bot.send_message (message.chat.id, answer, parse_mode="Markdown")
-        send_days_keyboard (message)
 
     elif message.text == "Понедельник" or message.text == "Вторник" or message.text == "Среда" or message.text == 'Четверг':
         settings.day = message.text
@@ -82,6 +81,9 @@ def handle_text(message):
         bot.send_message (message.chat.id, answer, parse_mode="Markdown")
         send_days_keyboard (message)
 
+    elif message.text == "Выбрать день":
+        send_days_keyboard (message)
+
     elif message.text == "Куда мне, блин, идти?":
         bot.send_chat_action (message.chat.id, 'typing')
         hour = datetime.datetime.today ().hour
@@ -95,7 +97,6 @@ def handle_text(message):
         elif hour >= 19:
             answer = "Ты, блин, уже никуда не успеешь."
         bot.send_message (message.chat.id, answer)
-        send_days_keyboard(message)
 
 
 bot.polling (none_stop=True, interval=0, timeout=20)
