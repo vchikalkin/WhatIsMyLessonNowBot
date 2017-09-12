@@ -63,7 +63,7 @@ def handle_text(message):
         send_days_keyboard (message)
 
     elif message.text == "Воскресенье":
-        answer = "Совсем чтоль поехавший? В воскресенье не бывает пар."
+        answer = "Ты понимаешь, что ты поехавший? В воскресенье не бывает пар."
         bot.send_message (message.chat.id, answer, parse_mode="Markdown")
         send_days_keyboard (message)
 

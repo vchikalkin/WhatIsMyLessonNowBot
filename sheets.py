@@ -31,7 +31,7 @@ def get_row(day, num, week):
 
 def print_lesson(row):
     return "*Время:* " + sheet.cell (row, 4).value + "\n" \
-           "*Ауд.:* " + sheet.cell (row, 5).value + "\n" + \
+                                                     "*Ауд.:* " + sheet.cell (row, 5).value + "\n" + \
            "*Тип:* " + sheet.cell (row, 6).value + "\n" + \
            "*Назв.:* " + sheet.cell (row, 7).value + "\n" + \
            "*Препод:* " + sheet.cell (row, 8).value
