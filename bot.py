@@ -1,6 +1,9 @@
 import telebot
 
+import settings
 import sheets
+
+import datetime
 
 bot = telebot.TeleBot ("419654586:AAGl98vEWE0iY9xXhnnwHygJ6bq7jwakQDY")
 
@@ -30,6 +33,7 @@ def send_days_keyboard(message):
     user_markup.row ('Понедельник', 'Вторник')
     user_markup.row ('Среда', 'Четверг')
     user_markup.row ('Пятница')
+    user_markup.row ('Куда мне, блин, идти?')
     answer = "Выбери день...\n_(Сегодня {0}, если что)_".format (sheets.today)
     bot.send_message (message.from_user.id, answer, parse_mode="Markdown", reply_markup=user_markup)
 
@@ -51,9 +55,6 @@ def handle_text(message):
     send_days_keyboard (message)
 
 
-day = ""
-
-
 @bot.message_handler (content_types=["text"])
 def handle_text(message):
     if message.text == "Пятница" or message.text == "Суббота":
@@ -67,23 +68,33 @@ def handle_text(message):
         bot.send_message (message.chat.id, answer, parse_mode="Markdown")
         send_days_keyboard (message)
 
-
-    elif message.text == "Понедельник" or message.text == "Вторник" or \
-                    message.text == "Среда" or message.text == 'Четверг':
-        bot.day = message.text
+    elif message.text == "Понедельник" or message.text == "Вторник" or message.text == "Среда" or message.text == 'Четверг':
+        settings.day = message.text
         send_week_keyboard (message)
 
     elif message.text == "Числитель" or message.text == "Знаменатель":
-        week = message.text
+        settings.week = message.text
         bot.send_chat_action (message.chat.id, 'typing')
-        answer = "*Пара* #1\n" + sheets.get_first_lesson (bot.day, week)
+        answer = "*Пара* #1\n" + sheets.get_first_lesson (settings.day, settings.week)
         bot.send_message (message.chat.id, answer, parse_mode="Markdown")
         bot.send_chat_action (message.chat.id, 'typing')
-        answer = "*Пара* #2\n" + sheets.get_second_lesson (bot.day, week)
+        answer = "*Пара* #2\n" + sheets.get_second_lesson (settings.day, settings.week)
         bot.send_message (message.chat.id, answer, parse_mode="Markdown")
         send_days_keyboard (message)
 
-        # send_days_keyboard (message)
+    elif message.text == "Куда мне, блин, идти?":
+        bot.send_chat_action (message.chat.id, 'typing')
+        hour = datetime.datetime.today ().hour
+        # minute = datetime.datetime.today ().minute
+        if 0 <= hour <= 12:
+            answer = "Куда ты, блин, так рано собрался?"
+        elif 12 <= hour < 18:
+            answer = (sheets.get_aud_force ("1"))
+        elif 18 <= hour < 19:
+            answer = (sheets.get_aud_force ("2"))
+        elif hour >= 19:
+            answer = "Ты, блин, уже никуда не успеешь."
+        bot.send_message (message.chat.id, answer)
 
 
 bot.polling (none_stop=True, interval=0)
