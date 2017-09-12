@@ -1,4 +1,5 @@
 import datetime
+import settings
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -8,14 +9,6 @@ creds = ServiceAccountCredentials.from_json_keyfile_name ('googleauth.json', sco
 client = gspread.authorize (creds)
 
 sheet = client.open ("Sheet1").sheet1
-
-dayofweek = datetime.datetime.today ().weekday ()
-# dayofweek = 1
-day_list = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница"]
-today = day_list[dayofweek]
-# today = "Понедельник"
-now_week = sheet.cell (23, 2).value
-# now_week = "Числитель"
 
 
 def get_row(day, num, week):
@@ -28,10 +21,10 @@ def get_row(day, num, week):
 
 
 def get_aud_force(num):
-    days = sheet.findall(today)
+    days = sheet.findall(settings.today)
     for d in days:
         row = d.row
-        if sheet.cell(row,2).value == now_week:
+        if sheet.cell(row,2).value == settings.now_week:
             if sheet.cell(row,3).value == num:
                 return "Тебе в "+sheet.cell(row,5).value+". Там тебя ждет " + sheet.cell(row,8).value
 

@@ -1,13 +1,13 @@
+import datetime
+
 import telebot
 
 import settings
 import sheets
 
-import datetime
-
 bot = telebot.TeleBot ("419654586:AAGl98vEWE0iY9xXhnnwHygJ6bq7jwakQDY")
 
-now_week = sheets.now_week
+now_week = settings.now_week
 
 
 def log(message, answer):
@@ -34,7 +34,7 @@ def send_days_keyboard(message):
     user_markup.row ('Среда', 'Четверг')
     user_markup.row ('Пятница')
     user_markup.row ('Куда мне, блин, идти?')
-    answer = "Выбери день...\n_(Сегодня {0}, если что)_".format (sheets.today)
+    answer = "Выбери день...\n_(Сегодня {0}, если что)_".format (settings.today)
     bot.send_message (message.from_user.id, answer, parse_mode="Markdown", reply_markup=user_markup)
 
 
