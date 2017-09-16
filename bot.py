@@ -85,7 +85,6 @@ def handle_text(message):
     elif message.text == "Куда мне, блин, идти?":
         bot.send_chat_action (message.chat.id, 'typing')
         hour = settings.hour
-        # minute = datetime.datetime.today ().minute
         if 0 <= hour < 15:
             answer = "Куда ты, блин, так рано собрался?"
         elif 15 <= hour < 18:

@@ -6,7 +6,7 @@ import sheets
 
 dayofweek = datetime.datetime.today ().weekday ()
 # dayofweek = 1
-day_list = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница"]
+day_list = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 today = day_list[dayofweek]
 # today = "Понедельник"
 now_week = sheets.sheet.cell (23, 2).value
