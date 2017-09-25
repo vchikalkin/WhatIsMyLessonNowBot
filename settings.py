@@ -4,16 +4,21 @@ import pytz
 
 import sheets
 
-dayofweek = datetime.datetime.today ().weekday ()
-# dayofweek = 1
-day_list = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-today = day_list[dayofweek]
-# today = "Понедельник"
-now_week = sheets.sheet.cell (23, 2).value
-# now_week = "Числитель"
 
-timezone = pytz.timezone ('Europe/Moscow')
-hour = datetime.datetime.now (timezone).hour
+def get_day():
+    dayofweek = datetime.datetime.today ().weekday ()
+    day_list = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    return day_list[dayofweek]
 
-day = today
-week = now_week
+
+def get_week():
+    return sheets.sheet.cell (23, 2).value
+
+
+def get_hour():
+    timezone = pytz.timezone ('Europe/Moscow')
+    return datetime.datetime.now (timezone).hour
+
+
+day = get_day ()
+week = get_week ()

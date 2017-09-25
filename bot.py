@@ -5,8 +5,6 @@ import sheets
 
 bot = telebot.TeleBot ("419654586:AAGl98vEWE0iY9xXhnnwHygJ6bq7jwakQDY")
 
-now_week = settings.now_week
-
 
 def log(message, answer):
     print ("\n-----------------------------")
@@ -32,7 +30,7 @@ def send_days_keyboard(message):
     user_markup.row ('Среда', 'Четверг')
     user_markup.row ('Пятница')
     user_markup.row ('Куда мне, блин, идти?')
-    answer = "Выбери день...\n_(Сегодня {0}, если что)_".format (settings.today)
+    answer = "Выбери день...\n_(Сегодня {0}, если что)_".format (settings.get_day ())
     bot.send_message (message.from_user.id, answer, parse_mode="Markdown", reply_markup=user_markup)
 
 
@@ -40,7 +38,7 @@ def send_week_keyboard(message):
     user_markup = telebot.types.ReplyKeyboardMarkup (True, False)
     user_markup.row ('Числитель', 'Знаменатель')
     user_markup.row ('Выбрать день')
-    answer = "Выбери неделю...\n_(Сейчас {0}, если что)_".format (now_week)
+    answer = "Выбери неделю...\n_(Сейчас {0}, если что)_".format (settings.get_week ())
     bot.send_message (message.from_user.id, answer, parse_mode="Markdown", reply_markup=user_markup)
 
 
@@ -84,14 +82,16 @@ def handle_text(message):
 
     elif message.text == "Куда мне, блин, идти?":
         bot.send_chat_action (message.chat.id, 'typing')
-        hour = settings.hour
-        if 0 <= hour < 15:
+        hour = settings.get_hour ()
+        if 0 <= hour < 6:
+            answer = "Ложись лучше спать."
+        if 6 <= hour < 15:
             answer = "Куда ты, блин, так рано собрался?"
         elif 15 <= hour < 18:
             answer = (sheets.get_aud_force ("1"))
         elif 18 <= hour < 19:
             answer = (sheets.get_aud_force ("2"))
-        elif hour >= 19:
+        elif 19 <= hour <= 23:
             answer = "Ты, блин, уже никуда не успеешь."
         bot.send_message (message.chat.id, answer)
 
