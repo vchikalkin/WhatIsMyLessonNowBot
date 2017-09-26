@@ -20,10 +20,10 @@ def get_row(day, num, week):
 
 
 def get_aud_force(num):
-    days = sheet.findall (settings.today)
+    days = sheet.findall (settings.get_day())
     for d in days:
         row = d.row
-        if sheet.cell (row, 2).value == settings.now_week:
+        if sheet.cell (row, 2).value == settings.get_week():
             if sheet.cell (row, 3).value == num:
                 return "Тебе в " + sheet.cell (row, 5).value + ". Там тебя ждет " + sheet.cell (row, 8).value
 
