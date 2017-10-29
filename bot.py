@@ -105,10 +105,10 @@ def handle_text(message):
     elif message.text == "Числитель" or message.text == "Знаменатель":
         settings.user_week = message.text
         bot.send_chat_action(message.chat.id, 'typing')
-        answer = "*Пара* #1\n" + database.print_lesson(database.get_lesson(settings.day, settings.week, "1"))
+        answer = "*Пара* #1\n" + database.print_lesson(database.get_lesson(settings.day, settings.user_week, "1"))
         bot.send_message(message.chat.id, answer, parse_mode="Markdown")
         bot.send_chat_action(message.chat.id, 'typing')
-        answer = "*Пара* #2\n" + database.print_lesson(database.get_lesson(settings.day, settings.week, "2"))
+        answer = "*Пара* #2\n" + database.print_lesson(database.get_lesson(settings.day, settings.user_week, "2"))
         bot.send_message(message.chat.id, answer, parse_mode="Markdown")
         send_days_keyboard(message)
 
