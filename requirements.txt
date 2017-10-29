@@ -1,4 +1,2 @@
-gspread==0.6.2
-google_api_python_client==1.6.3
 pyTelegramBotAPI==3.2.0
 pytz==2017.2
