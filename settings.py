@@ -2,6 +2,8 @@ import datetime
 
 import pytz
 
+timezone = pytz.timezone('Europe/Moscow')
+
 
 def get_day():
     dayofweek = datetime.datetime.today().weekday()
@@ -9,15 +11,20 @@ def get_day():
     return day_list[dayofweek]
 
 
-def get_week():
-    return "Знаменатель"
-    # return sheets.sheet.cell (23, 2).value
+day = get_day()
 
 
 def get_hour():
-    timezone = pytz.timezone('Europe/Moscow')
     return datetime.datetime.now(timezone).hour
 
 
-day = get_day()
-week = get_week()
+def get_current_time():
+    return datetime.datetime.now(timezone).strftime("%d.%m.%Y %H:%M:%S")
+
+
+def get_week():
+    return week
+
+
+week = "Числитель"
+user_week = week
