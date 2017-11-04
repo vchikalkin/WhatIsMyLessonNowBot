@@ -19,8 +19,8 @@ def send_admin_keyboard():
     bot.send_message(admin_id, answer, parse_mode="Markdown", reply_markup=user_markup)
 
 
-answer = "[[{0}]] Бот запущен".format(settings.get_current_time())
-bot.send_message(admin_id, answer, parse_mode="Markdown")
+message = "[[{0}]] Бот запущен".format(settings.get_current_date_and_time())
+bot.send_message(admin_id, message, parse_mode="Markdown")
 send_admin_keyboard()
 
 
@@ -34,13 +34,6 @@ def log(message, answer):
                                                                                  str(message.from_user.id),
                                                                                  message.text,
                                                                                  answer))
-
-
-@bot.message_handler(commands=['about'])
-def handle_text(message):
-    answer = "Schedule Bot by Chika.\nNow only for 647M RSREU group\nhttps://vk.com/chikalkin"
-    bot.send_message(message.chat.id, answer)
-    send_days_keyboard(message)
 
 
 def send_days_keyboard(message):
@@ -73,11 +66,6 @@ def send_hide_keyboard(message):
     bot.send_message(message.from_user.id, "...", reply_markup=hide_markup)
 
 
-@bot.message_handler(commands=["start"])
-def handle_text(message):
-    send_days_keyboard(message)
-
-
 @bot.message_handler(content_types=["text"])
 def handle_text(message):
     # ADMIN SETTINGS
@@ -98,18 +86,21 @@ def handle_text(message):
     # ADMIN SETTINGS
 
     # MAIN
-    if message.text == "Понедельник" or message.text == "Вторник" or message.text == "Среда" or message.text == 'Четверг' or message.text == 'Пятница':
-        settings.day = message.text
+    if message.text in settings.weekdays:  # DETECT INPUT USER_DAY
+        settings.user_day = message.text
         send_week_keyboard(message)
 
     elif message.text == "Числитель" or message.text == "Знаменатель":
         settings.user_week = message.text
-        bot.send_chat_action(message.chat.id, 'typing')
-        answer = "*Пара* #1\n" + database.print_lesson(database.get_lesson(settings.day, settings.user_week, "1"))
-        bot.send_message(message.chat.id, answer, parse_mode="Markdown")
-        bot.send_chat_action(message.chat.id, 'typing')
-        answer = "*Пара* #2\n" + database.print_lesson(database.get_lesson(settings.day, settings.user_week, "2"))
-        bot.send_message(message.chat.id, answer, parse_mode="Markdown")
+        num = database.count_lessons(settings.user_day, settings.user_week)
+        if not num:
+            answer = "Похоже, в этот день пар нет."
+            bot.send_message(message.chat.id, answer, parse_mode="Markdown")
+        else:
+            for i in range(len(num)):
+                bot.send_chat_action(message.chat.id, 'typing')
+                answer = database.get_lesson(settings.user_day, settings.user_week, num[i][0])
+                bot.send_message(message.chat.id, answer, parse_mode="Markdown")
         send_days_keyboard(message)
 
     elif message.text == "Выбрать день":
@@ -119,29 +110,37 @@ def handle_text(message):
     # FORCE GET LESSON
     elif message.text == "КУДА МНЕ ИДТИ?":
         bot.send_chat_action(message.chat.id, 'typing')
-        hour = settings.get_hour()
         day = settings.get_day()
-        if day != "Суббота" and day != "Воскресенье":
-            if 0 <= hour < 15:
-                answer = "Похоже, пары не скоро."
-            elif 15 <= hour < 18:
-                temp = database.print_lesson_force(database.get_lesson_force("1"))
-                if not temp:
-                    answer = "Похоже, первой пары нет."
-                else:
-                    answer = temp
-            elif 18 <= hour < 19:
-                temp = database.print_lesson_force(database.get_lesson_force("2"))
-                if not temp:
-                    answer = "Похоже, второй пары нет."
-                else:
-                    answer = temp
-            elif 19 <= hour <= 23:
-                answer = "Ты уже никуда не успеешь."
-        else:
+        if day in settings.weekends:  # DETECT WEEKEND
             answer = "Сегодня выходной! Отдыхай."
-        bot.send_message(message.chat.id, answer)
+        else:
+            week = settings.get_week()
+            time_frames = database.find_time_frames(day, week, 1)
+            if not time_frames:
+                answer = "Похоже, сегодня нет пар."
+            else:
+                time_start = time_frames[0]
+                # time_end = time_frames[1]
+                time_end = "23:59"
+                current_time = settings.get_current_time()
+                if time_start <= str(current_time) <= time_end:
+                    answer = database.get_lesson_force(day, week, current_time)
+                else:
+                    answer = "Похоже, пары не скоро."
+        bot.send_message(message.chat.id, answer, parse_mode="Markdown")
         # FORCE GET LESSON
+
+
+@bot.message_handler(commands=["start"])
+def handle_text(message):
+    send_days_keyboard(message)
+
+
+@bot.message_handler(commands=['about'])
+def handle_text(message):
+    answer = "Schedule Bot by Chika.\nNow only for 647M RSREU group\nhttps://vk.com/chikalkin"
+    bot.send_message(message.chat.id, answer)
+    send_days_keyboard(message)
 
 
 bot.polling(none_stop=True)
