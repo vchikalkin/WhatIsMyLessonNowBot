@@ -2,17 +2,26 @@ import datetime
 
 import pytz
 
-# RUN PARAMETERS
-weekdays = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-weekends = ["Суббота", "Воскресенье"]
-timezone = pytz.timezone('Europe/Moscow')
+# STARTUP PARAMETERS
+weekdays = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]
+weekends = ["Воскресенье"]
 week = "Числитель"
+timezone = pytz.timezone('Europe/Moscow')
+
+admin_id = 116570554
+week_file = "week.txt"
 
 
-# RUN PARAMETERS
+# STARTUP PARAMETERS
 
 def get_week():
     return week
+
+
+def set_week(w):
+    global week
+    week = w
+    save_week(w)
 
 
 def get_day():
@@ -28,7 +37,16 @@ def get_current_time():
     return datetime.datetime.now(timezone).strftime("%H:%M")
 
 
-# USER'S CHAT VARIABLES
+def save_week(w):
+    with open(week_file, 'w') as text_file:
+        text_file.write(w)
+        text_file.truncate()
+        text_file.close()
+
+
+# USER'S CHAT TEMP VARIABLES
 user_week = week
 user_day = get_day()
-# USER'S CHAT VARIABLES
+user_university = ""
+user_group = ""
+# USER'S CHAT TEMP VARIABLES
