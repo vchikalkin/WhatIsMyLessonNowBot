@@ -5,7 +5,7 @@ import schedule
 import settings
 import users
 
-bot = telebot.TeleBot("456311595:AAHk_pzaDuqTCeD7QQq0SmcCpEscRUxxGAo")
+bot = telebot.TeleBot("token")
 
 
 def send_keyboard(id, answer, markup):
