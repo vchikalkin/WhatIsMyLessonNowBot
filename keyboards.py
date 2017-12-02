@@ -37,10 +37,13 @@ class UniversitiesKeyboard:
 
 
 class GroupsKeyboard:
-    markup = telebot.types.ReplyKeyboardMarkup(True, False)
-    university = settings.user_university
-    for i in users.get_groups(university):
-        markup.row(i)
+    @staticmethod
+    def get_groups(university):
+        markup = telebot.types.ReplyKeyboardMarkup(True, False)
+        for i in users.get_groups(university):
+            markup.row(i)
+        return markup
+
     answer = "Выбери свою группу..."
 
 

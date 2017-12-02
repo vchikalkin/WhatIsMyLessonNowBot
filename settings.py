@@ -2,17 +2,26 @@ import datetime
 
 import pytz
 
-# STARTUP PARAMETERS
+import system
+
+# PARAMETERS
+
 weekdays = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]
 weekends = ["Воскресенье"]
+
+week_file = "week.txt"
 week = "Числитель"
+
 timezone = pytz.timezone('Europe/Moscow')
 
 admin_id = 116570554
-week_file = "week.txt"
+
+delta_hour = 1
+delta_minute = 30
 
 
-# STARTUP PARAMETERS
+
+# PARAMETERS
 
 def get_week():
     return week
@@ -22,6 +31,10 @@ def set_week(w):
     global week
     week = w
     save_week(w)
+    system_message = "Applied parameter *'" + week + "'*"
+    system.alert(system_message)
+    from main import send_to_admin
+    send_to_admin(system_message)
 
 
 def get_day():

@@ -1,22 +1,23 @@
 import os
 
+import authentication
 import keyboards
 import main
 import settings
 import system
+import users
 from main import bot
 
 # STARTUP PARAMETERS
-system_message = "[[{0}]] Бот запущен".format(settings.get_current_date_and_time())
 
-if os.path.isfile(settings.week_file) and os.path.getsize(settings.week_file) > 0:
-    # system_message += "\nФайл " + settings.week_file + " найден"
-    with open(settings.week_file) as text_file:
-        content = text_file.readline()
-        settings.week = content
-system_message += "\nУстановлен параметр *'" + settings.get_week() + "'*"
+system_message = "[{0}] Bot Launched".format(settings.get_current_date_and_time())
 system.alert(system_message)
 main.send_to_admin(system_message)
+
+if os.path.isfile(settings.week_file) and os.path.getsize(settings.week_file) > 0:
+    with open(settings.week_file) as text_file:
+        content = text_file.readline()
+        settings.set_week(content)
 
 
 # STARTUP PARAMETERS
@@ -28,7 +29,12 @@ def handle_text(message):
     user_id = message.from_user.id
     day = settings.get_day()
     week = settings.get_week()
-    main.handle_text(user_id, message, day, week)
+    if not users.exist(user_id):
+        authentication.login(user_id, message)
+    else:
+        main.handle_text_main(user_id, message, day, week)
+    if user_id == settings.admin_id:
+        main.handle_text_admin(user_id, message, day)
 
 
 @bot.message_handler(commands=["start"])

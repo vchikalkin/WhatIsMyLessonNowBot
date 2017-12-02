@@ -1,5 +1,7 @@
 import sqlite3
 
+import system
+
 connection = sqlite3.connect('users.db', check_same_thread=False)
 
 
@@ -46,40 +48,38 @@ def register(id, university, group, first_name, last_name):
             "INSERT INTO users (TG_ID, ST_UNIVERSITY, ST_GROUP, FIRST_NAME, LAST_NAME) VALUES ((?), (?), (?), (?), (?))",
             (id, university, group, first_name, last_name))
         connection.commit()
-        message = "User {0} successfully registered.".format(id)
+        system_message = "User {0} is successfully registered.".format(id)
         cursor.close()
+        from main import send_to_admin
+        send_to_admin(system_message)
     else:
-        message = "User {0} already registered.".format(id)
-    print("System Message: " + message)
+        system_message = "User {0} already registered.".format(id)
+    system.alert(system_message)
 
 
 def delete_user(id):
     if not exist(id):
-        message = "User isn't registered"
+        system_message = "User isn't registered"
     else:
         cursor = connection.cursor()
         cursor.execute("DELETE FROM users WHERE TG_ID=(?)", (id,))
         connection.commit()
         cursor.close()
-        message = "User {0} is successfully deleted.".format(id)
-    print("System Message: " + message)
+        system_message = "User {0} is successfully deleted.".format(id)
+        from main import send_to_admin
+        send_to_admin(system_message)
+    system.alert(system_message)
 
 
 def move_user(id, group):
     if not exist(id):
-        message = "User isn't registered"
+        system_message = "User isn't registered"
     else:
         cursor = connection.cursor()
         cursor.execute("UPDATE users SET ST_GROUP = (?) WHERE TG_ID=(?)", (group, id))
         connection.commit()
         cursor.close()
-        message = "User {0} moved to group {1}.".format(id, group)
-    print("System Message: " + message)
-
-
-def print_all():
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM users')
-    result = cursor.fetchall()
-    cursor.close()
-    print(result)
+        system_message = "User {0} moved to group {1}.".format(id, group)
+        from main import send_to_admin
+        send_to_admin(system_message)
+    system.alert(system_message)
