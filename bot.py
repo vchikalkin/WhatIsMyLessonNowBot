@@ -14,8 +14,9 @@ system_message = "[{0}] Bot Launched".format(settings.get_current_date_and_time(
 system.alert(system_message)
 main.send_to_admin(system_message)
 
-if os.path.isfile(settings.week_file) and os.path.getsize(settings.week_file) > 0:
-    with open(settings.week_file) as text_file:
+week_file_path = settings.week_file_path
+if os.path.isfile(week_file_path) and os.path.getsize(week_file_path) > 0:
+    with open(week_file_path) as text_file:
         content = text_file.readline()
         settings.set_week(content)
 

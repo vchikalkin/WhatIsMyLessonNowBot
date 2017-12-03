@@ -6,10 +6,11 @@ import system
 
 # PARAMETERS
 
-weekdays = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]
+weekdays = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 weekends = ["Воскресенье"]
 
-week_file = "week.txt"
+week_file_path = "week.txt"
+token_file_path = "token.txt"
 week = "Числитель"
 
 timezone = pytz.timezone('Europe/Moscow')
@@ -18,7 +19,6 @@ admin_id = 116570554
 
 delta_hour = 1
 delta_minute = 30
-
 
 
 # PARAMETERS
@@ -51,15 +51,7 @@ def get_current_time():
 
 
 def save_week(w):
-    with open(week_file, 'w') as text_file:
+    with open(week_file_path, 'w') as text_file:
         text_file.write(w)
         text_file.truncate()
         text_file.close()
-
-
-# USER'S CHAT TEMP VARIABLES
-user_week = week
-user_day = get_day()
-user_university = ""
-user_group = ""
-# USER'S CHAT TEMP VARIABLES

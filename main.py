@@ -3,9 +3,12 @@ import telebot
 import keyboards
 import schedule
 import settings
+import user
 import users
 
 bot = telebot.TeleBot("token")
+
+user = user.User()
 
 
 def send_keyboard(id, answer, markup):
@@ -31,7 +34,7 @@ def handle_text_settings(user_id, message):
     if message.text == "Настройки":
         send_keyboard(user_id, keyboards.SettingsKeyboard.answer, keyboards.SettingsKeyboard.get_markup(user_id))
     if message.text == "Сменить группу":
-        answer = "Ты был зарегистрирован в группе *{0}*".format(settings.user_group)
+        answer = "Ты был зарегистрирован в группе *{0}*".format(user.group)
         bot.send_message(user_id, answer, parse_mode="Markdown")
         users.delete_user(user_id)
         send_keyboard(user_id, keyboards.UniversitiesKeyboard.answer, keyboards.UniversitiesKeyboard.markup)
@@ -42,7 +45,7 @@ def handle_text_force(user_id, day, week):
     if day in settings.weekends:  # DETECT WEEKEND
         answer = "Сегодня выходной!"
     else:
-        time_frames = schedule.find_time_frames(settings.user_university, settings.user_group, day, week,
+        time_frames = schedule.find_time_frames(user.university, user.group, day, week,
                                                 settings.delta_hour, settings.delta_minute)
         if not time_frames:
             answer = "Похоже, сегодня нет пар."
@@ -52,7 +55,7 @@ def handle_text_force(user_id, day, week):
             time_end = "23:59"
             current_time = settings.get_current_time()
             if time_start <= str(current_time) <= time_end:
-                answer = schedule.get_lesson_force(settings.user_university, settings.user_group, day, week,
+                answer = schedule.get_lesson_force(user.university, user.group, day, week,
                                                    current_time)
             else:
                 answer = "Похоже, пары не скоро."
@@ -61,30 +64,25 @@ def handle_text_force(user_id, day, week):
 
 def handle_text_main(user_id, message, day, week):
     user_where_from = users.where_from(user_id)
-    settings.user_university = user_where_from[0]
-    settings.user_group = user_where_from[1]
-
-    # SETTINGS
-    if message.text == "Настройки" or message.text == "Сменить группу":
-        handle_text_settings(user_id, message)
-    # SETTINGS
+    user.university = user_where_from[0]
+    user.group = user_where_from[1]
 
     # MAIN
     if message.text in settings.weekdays:  # DETECT INPUT USER_DAY
-        settings.user_day = message.text
+        user.day = message.text
         send_keyboard(user_id, keyboards.WeekKeyboard.get_week(week), keyboards.WeekKeyboard.markup)
     elif message.text == "Числитель" or message.text == "Знаменатель":
-        settings.user_week = message.text
-        num = schedule.count_lessons(settings.user_university, settings.user_group, settings.user_day,
-                                     settings.user_week)
+        user.week = message.text
+        num = schedule.count_lessons(user.university, user.group, user.day,
+                                     user.week)
         if not num:
             answer = "Похоже, в этот день пар нет."
             bot.send_message(user_id, answer, parse_mode="Markdown")
         else:
             for i in range(len(num)):
                 bot.send_chat_action(user_id, 'typing')
-                answer = schedule.get_lesson(settings.user_university, settings.user_group, settings.user_day,
-                                             settings.user_week, num[i][0])
+                answer = schedule.get_lesson(user.university, user.group, user.day,
+                                             user.week, num[i][0])
                 bot.send_message(user_id, answer, parse_mode="Markdown")
         send_keyboard(user_id, keyboards.DaysKeyboard.get_answer(day), keyboards.DaysKeyboard.markup)
     elif message.text == "Выбрать день" or message.text == "Назад":
@@ -95,6 +93,11 @@ def handle_text_main(user_id, message, day, week):
     elif message.text == "КУДА МНЕ ИДТИ?":
         handle_text_force(user_id, day, week)
     # FORCE GET LESSON
+
+    # SETTINGS
+    if message.text == "Настройки" or message.text == "Сменить группу":
+        handle_text_settings(user_id, message)
+    # SETTINGS
 
 # NOTIFIER
 # TODO
