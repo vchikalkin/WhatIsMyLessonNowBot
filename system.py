@@ -18,11 +18,6 @@ def alert(message):
     print("------------------------------------\n")
 
 
-def parse_dates(dates):
-    result = [item.strip() for item in dates.split(',')]
-    return result
-
-
 def read_file(file):
     if os.path.isfile(file) and os.path.getsize(file) > 0:
         with open(file) as text_file:
