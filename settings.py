@@ -2,15 +2,14 @@ import datetime
 
 import pytz
 
-import system
-
 # PARAMETERS
 
-weekdays = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 weekends = ["Воскресенье"]
 
 week_file_path = "week.txt"
 token_file_path = "token.txt"
+# TODO automatic week counter
 week = "Числитель"
 
 timezone = pytz.timezone('Europe/Moscow')
@@ -32,18 +31,23 @@ def set_week(w):
     week = w
     save_week(w)
     system_message = "Applied parameter *'" + week + "'*"
-    system.alert(system_message)
+    from system import alert
+    alert(system_message)
     from main import send_to_admin
     send_to_admin(system_message)
 
 
-def get_day():
+def get_current_day():
     today = datetime.datetime.today().weekday()
-    return weekdays[today]
+    return days[today]
 
 
 def get_current_date_and_time():
     return datetime.datetime.now(timezone).strftime("%d.%m.%Y %H:%M:%S")
+
+
+def get_current_date():
+    return datetime.datetime.now(timezone).strftime("%d/%m")
 
 
 def get_current_time():

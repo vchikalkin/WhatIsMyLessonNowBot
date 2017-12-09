@@ -1,7 +1,7 @@
 import telebot
 
+import groups
 import settings
-import users
 
 
 class DaysKeyboard:
@@ -31,7 +31,7 @@ class WeekKeyboard:
 
 class UniversitiesKeyboard:
     markup = telebot.types.ReplyKeyboardMarkup(True, False)
-    for i in users.get_universities():
+    for i in groups.get_universities():
         markup.row(i)
     answer = "Выбери свой ВУЗ..."
 
@@ -40,7 +40,7 @@ class GroupsKeyboard:
     @staticmethod
     def get_groups(university):
         markup = telebot.types.ReplyKeyboardMarkup(True, False)
-        for i in users.get_groups(university):
+        for i in groups.get_groups(university):
             markup.row(i)
         return markup
 
